@@ -59,10 +59,15 @@ form.addEventListener('submit', (e) => {
     const editingId = Number(form.elements["editingId"].value);
 
     if (!name || !password || !lastName || !email) {
-        return new Toast({
-            message: 'All fields are required. Please complete the form.',
-            type: 'danger'
-        });
+        return Toastify({
+            text: 'All fields are required. Please complete the form.',
+            gravity: "bottom",
+            close: true,
+            style: {
+                background: "linear-gradient(to right, #ff416c, #ff4b2b)",
+                borderRadius: "10px"
+            },
+        }).showToast();
     }
 
     if (!isNaN(editingId) && editingId !== 0) {
@@ -79,10 +84,16 @@ form.addEventListener('submit', (e) => {
     localStorage.setItem("datos", JSON.stringify(localge));
     form.reset();
     form.elements["editingId"].value = '';
-    new Toast({
-        message: 'Data saved successfully!',
-        type: 'success'
-    });
+    Toastify({
+        text: 'Data saved successfully!',
+        gravity: "bottom",
+        close: true,
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+            borderRadius: "10px"
+        },
+    }).showToast();
+
     renderTable();
 });
 

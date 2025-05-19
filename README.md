@@ -17,6 +17,7 @@ TodoApp is a simple web application for managing user data.
 - HTML5
 - Tailwind CSS
 - JavaScript (if needed for table functionality)
+- [Toast.js](https://apvarun.github.io/toastify-js/) (for user-friendly toast notifications)
 
 ## Usage
 

@@ -4,8 +4,8 @@ let localge = JSON.parse(localStorage.getItem("datos")) || [];
 
 function renderTable() {
     table.innerHTML = localge.map((dato, index) => `
-        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+        <tr class="odd:bg-white even:bg-gray-50 border-b">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 ${dato.name}
             </th>
             <td class="px-6 py-4">
@@ -26,8 +26,8 @@ function renderTable() {
 
     if(localge.length < 1){
         table.innerHTML = `
-            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td scope="row" colspan="100" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+            <tr class="odd:bg-white even:bg-gray-50 border-b">
+                <td scope="row" colspan="100" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
                     No hay datos para mostrar
                 </td>
             </tr>
@@ -43,34 +43,46 @@ function eliminar(index) {
 
 function editar(index) {
     const datOne = localge[index];
-    const name = prompt("Name", datOne.name);
-    const lastName = prompt("Last Name", datOne.lastName);
-    const email = prompt("Email", datOne.email);
-    const password = prompt("Password", datOne.password);
-
-    if (!name || !password || !lastName || !email) {
-        return alert("No puede enviar campos vacíos");
-    }
-
-    localge[index] = { name, lastName, email, password};
-    localStorage.setItem("datos", JSON.stringify(localge));
-    renderTable();
+    document.getElementById("name").value = datOne.name;
+    document.getElementById("last-name").value = datOne.lastName;
+    document.getElementById("email").value = datOne.email;
+    document.getElementById("password").value = datOne.password;
+    document.getElementById("editingId").value = datOne.id;
 }
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = e.target[0].value;
-    const lastName = e.target[1].value;
-    const email = e.target[2].value;
-    const password = e.target[3].value;
+    const name = form.elements["name"].value;
+    const lastName = form.elements["last-name"].value;
+    const email = form.elements["email"].value;
+    const password = form.elements["password"].value;
+    const editingId = Number(form.elements["editingId"].value);
 
-    
     if (!name || !password || !lastName || !email) {
-        return alert("No puede enviar campos vacíos");
+        return new Toast({
+            message: 'All fields are required. Please complete the form.',
+            type: 'danger'
+        });
     }
 
-    localge.push({ name, lastName, email, password });
+    if (!isNaN(editingId) && editingId !== 0) {
+        const index = localge.findIndex(d => Number(d.id) === editingId);
+        if (index !== -1) {
+            localge[index] = { id: editingId, name, lastName, email, password };
+        }
+    } else {
+        // Create mode
+        localge.push({ id: Date.now(), name, lastName, email, password });
+    }
+
+
     localStorage.setItem("datos", JSON.stringify(localge));
+    form.reset();
+    form.elements["editingId"].value = '';
+    new Toast({
+        message: 'Data saved successfully!',
+        type: 'success'
+    });
     renderTable();
 });
 
